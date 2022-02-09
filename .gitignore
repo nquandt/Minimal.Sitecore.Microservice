@@ -2,11 +2,12 @@
 # compiled source #
 ###################
 license.xml
-certs_config.yaml
+*/certs_config.yaml
 *.com
 *.env
 *.class
 *.dll
+*.user
 *.exe
 *.pdb
 *.dll.config

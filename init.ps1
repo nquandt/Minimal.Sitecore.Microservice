@@ -6,11 +6,11 @@ Param (
     $LicenseXmlPath,
 
     [string]
-    $HostName = "Minimal.Microservice",
+    $HostName = "Minimal.Microservice"
     
     # We do not need to use [SecureString] here since the value will be stored unencrypted in .env,
     # and used only for transient local example environment.
-    [string]
+    # [string]
     #$SitecoreAdminPassword = "b"
 )
 
