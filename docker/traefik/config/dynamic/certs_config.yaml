@@ -1,4 +1,4 @@
 tls:
   certificates:
-    - certFile: C:\etc\traefik\certs\##Cert Name Here
-      keyFile: C:\etc\traefik\certs\##Cert Key Here
+    - certFile: C:\etc\traefik\certs\Minimal.Server.Controllers.MinimalApiController.pem
+      keyFile: C:\etc\traefik\certs\Minimal.Server.Controllers.MinimalApiController-key.pem

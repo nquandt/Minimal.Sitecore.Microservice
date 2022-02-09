@@ -10,5 +10,5 @@
 /deploy/website/*
 !/deploy/website/.gitkeep
 
-/traefik/certs/*
+/traefik/config/*
 !/traefik/certs/.gitkeep
