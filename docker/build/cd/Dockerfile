@@ -10,6 +10,8 @@ FROM BASE_IMAGE
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+COPY .\Run-W3SVCService.ps1 C:\
+
 WORKDIR C:\inetpub\wwwroot
 
 # Copy development tools and entrypoint
