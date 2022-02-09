@@ -1,6 +1,7 @@
 ###################
 # compiled source #
 ###################
+license.xml
 *.com
 *.env
 *.class

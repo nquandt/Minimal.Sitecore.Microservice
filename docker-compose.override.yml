@@ -1,0 +1,49 @@
+version: "2.4"
+
+services:
+
+  #solution:
+    #image: ${REGISTRY}${COMPOSE_PROJECT_NAME}-solution:${VERSION:-latest}
+    #build:
+      #context: .
+      #args:
+        #BASE_IMAGE: ${SOLUTION_BASE_IMAGE}
+        #BUILD_IMAGE: ${SOLUTION_BUILD_IMAGE}
+        #TDS_Owner: ${TDS_OWNER}
+        #TDS_Key: ${TDS_KEY}
+    #scale: 0
+
+  traefik:
+    volumes:
+      - ./docker/traefik:C:/etc/traefik
+
+  #redis:
+  #  image: ${REGISTRY}${COMPOSE_PROJECT_NAME}-redis:${VERSION:-latest}
+  #  build:
+  #    context: ./docker/build/redis
+  #    args:
+  #      BASE_IMAGE: ${SITECORE_DOCKER_REGISTRY}sitecore-redis:${SITECORE_VERSION}
+
+  cd:
+    image: ${REGISTRY}${COMPOSE_PROJECT_NAME}-xp1-cd:${VERSION:-latest}
+    build:
+      context: ./docker/build/cd
+      args:
+        BASE_IMAGE: mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2019
+        TOOLING_IMAGE: ${SITECORE_TOOLS_REGISTRY}sitecore-docker-tools-assets:${TOOLS_VERSION}
+        #SOLUTION_IMAGE: ${REGISTRY}${COMPOSE_PROJECT_NAME}-solution:${VERSION:-latest}
+    #depends_on:
+      #- solution
+    volumes:
+      - ${LOCAL_DEPLOY_PATH}\website:C:\deploy
+      - ${LOCAL_DATA_PATH}\cd:C:\inetpub\wwwroot\App_Data\logs
+      - ${HOST_LICENSE_FOLDER}:C:\license
+    environment:
+      ## BASIC_COMPANY_URL: ${SITE_HOST}
+      SITECORE_LICENSE_LOCATION: C:\license\license.xml
+      SOLR_CORE_PREFIX_NAME: ${SOLR_CORE_PREFIX_NAME}
+      ## Development Environment Optimizations      
+      #SITECORE_DEVELOPMENT_PATCHES: DevEnvOn,CustomErrorsOff,DebugOn,DiagnosticsOff,InitMessagesOff     
+    entrypoint: powershell -Command "& C:\tools\entrypoints\iis\Development.ps1"
+    labels:
+      - "traefik.http.routers.cd-secure.rule=Host(`${CD_HOST}`)"

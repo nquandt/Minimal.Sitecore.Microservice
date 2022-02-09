@@ -1,0 +1,50 @@
+version: "2.4"
+services:
+  traefik:
+    isolation: ${TRAEFIK_ISOLATION}
+    image: ${TRAEFIK_IMAGE}
+    command:
+      - "--ping"
+      - "--api.insecure=true"
+      - "--providers.docker.endpoint=npipe:////./pipe/docker_engine"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.file.directory=C:/etc/traefik/config/dynamic"
+      - "--entryPoints.websecure.address=:443"
+      - "--log.level=DEBUG"
+    ports:
+      - "443:443"
+      - "8079:8080"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+    volumes:
+      - source: \\.\pipe\docker_engine
+        target: \\.\pipe\docker_engine
+        type: npipe
+      - ./traefik:C:/etc/traefik
+#    depends_on:      
+ #     cd:
+  #      condition: service_healthy
+
+  #redis:
+  #  isolation: ${ISOLATION}
+  #  image: ${SITECORE_DOCKER_REGISTRY}sitecore-redis:${SITECORE_VERSION}
+      
+  cd:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-xp1-cd:${SITECORE_VERSION}
+    environment:
+      Sitecore_AppSettings_instanceNameMode:define: default
+      Sitecore_ConnectionStrings_Security: Data Source=${Database_Server};Initial Catalog=${Security_Catalog};User ID=${Core_Database_Username};Password=${Core_Database_Password};
+      Sitecore_ConnectionStrings_Web: Data Source=${Database_Server};Initial Catalog=Sitecore.Web;User ID=${Web_Database_Username};Password=${Web_Database_Password};
+      ## Sitecore_ConnectionStrings_ExperienceForms: Data Source=${Database_Server};Initial Catalog=Sitecore.ExperienceForms;User ID=${Forms_Database_Username};Password=${Forms_Database_Password};
+      ## Sitecore_ConnectionStrings_Solr.Search: ${Solr_Search_Provider}
+      ## Sitecore_ConnectionStrings_Redis.Sessions: redis:6379,ssl=False,abortConnect=False
+      Sitecore_License: ${SITECORE_LICENSE}      
+    #healthcheck:
+     # test: ["CMD", "powershell", "-command", "C:/Healthchecks/Healthcheck.ps1"]
+      #timeout: 300s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cd-secure.entrypoints=websecure"
+      - "traefik.http.routers.cd-secure.rule=Host(`${CD_HOST}`)"
+      - "traefik.http.routers.cd-secure.tls=true"

@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: C:\etc\traefik\certs\##Cert Name Here
+      keyFile: C:\etc\traefik\certs\##Cert Key Here
