@@ -2,6 +2,7 @@
 # compiled source #
 ###################
 license.xml
+certs_config.yaml
 *.com
 *.env
 *.class
